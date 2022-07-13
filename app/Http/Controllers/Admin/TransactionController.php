@@ -16,7 +16,7 @@ class TransactionController extends Controller
     public function index()
     {
 
-        return view('dashboard.transactions.index');
+        return view('dashboard.reports.transactions.index');
     }
 
 
