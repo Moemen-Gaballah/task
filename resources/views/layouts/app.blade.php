@@ -18,6 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @yield('style')
 </head>
 <body>
     <div id="app">
@@ -61,6 +62,12 @@
                                     <a class="dropdown-item" href="{{ route('profile') }}">
                                         {{ __('profile') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('transactions.index') }}">
+                                        {{ __('all transactions') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('transactions.create') }}">
+                                        {{ __('transfer') }}
+                                    </a>
 
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
@@ -89,5 +96,6 @@
             @yield('content')
         </main>
     </div>
+    @yield('script')
 </body>
 </html>

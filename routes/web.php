@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +22,18 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile')->middleware('auth');
-Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile')->middleware('auth');
+
+
+Route::group(['middleware' => 'auth'], function()
+{
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile');
+
+
+    Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('transactions/list', [TransactionController::class, 'getTransactions'])->name('transactions.list');
+
+    Route::get('transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
+    Route::post('transactions', [TransactionController::class, 'store'])->name('transactions.create');
+});
