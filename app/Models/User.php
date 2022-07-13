@@ -24,6 +24,8 @@ class User extends Authenticatable
         'balance'
     ];
 
+    const MAX_Transfer = 200;
+
     /**
      * The attributes that should be hidden for serialization.
      *

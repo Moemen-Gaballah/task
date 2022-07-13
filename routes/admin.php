@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,12 +17,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', function () {
-    return 'test admin';
+
+
+Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('admin.login_form')->middleware('guest');
+
+Route::post('/admin/login', [LoginController::class, 'attemptLogin'])->name('admin.login');
+
+
+Route::group(['prefix'=>'admin','as'=>'admin.', 'middleware' => 'auth:admin'], function()
+{
+
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/list', [TransactionController::class, 'getTransactions'])->name('transactions.list');
+
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/list', [UserController::class, 'getUsers'])->name('users.list');
+    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs.index');
+
+
 });
-
-Route::get('/admin/home', [App\Http\Controllers\Admin\HomeController::class, 'index'])->name('home');
-
-Route::get('/admin/login', [App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('admin.login_form')->middleware('guest');
-
-Route::post('/admin/login', [App\Http\Controllers\Admin\Auth\LoginController::class, 'attemptLogin'])->name('admin.login');

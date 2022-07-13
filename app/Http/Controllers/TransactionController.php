@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
+use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
@@ -56,7 +57,10 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        //
+        // TODO Select Ajax with pagination for performance
+        $users = User::select('id', 'name')->get();
+
+        return view('transactions.create',compact('users'));
     }
 
     /**
@@ -67,7 +71,34 @@ class TransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request)
     {
-        //
+        // Validation
+        $amountErrorMsg = $this->validateTransferBalance($request->all());
+        if(!is_null($amountErrorMsg)){
+            return back()->withErrors(['amount' => $amountErrorMsg]);
+        }
+
+        Transaction::create([
+           'from' => auth()->id(),
+           'to' => $request->user_id,
+           'amount' => $request->amount,
+        ]);
+
+    }
+
+    protected function validateTransferBalance($data){
+        $amountMsg = null;
+        $balance = auth()->user()->balance;
+        $totalTransferLastHour = Transaction::where('from', auth()->id())->where('created_at', '>=', \Carbon\Carbon::now()->subHour())->sum('amount');
+        $totalTransfer = $data['amount'] + $totalTransferLastHour;
+
+        if($balance < $data['amount'])
+            return $amountMsg = 'sorry, your balance less than amount';
+
+
+        if($totalTransfer > User::MAX_Transfer)
+            return $amountMsg = 'sorry, try again after one hour';
+
+        return $amountMsg;
     }
 
 

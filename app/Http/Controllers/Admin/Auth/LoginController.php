@@ -22,7 +22,7 @@ class LoginController extends Controller
         ]);
 
         if (\Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember')))
-            return redirect()->intended('/admin/home');
+            return redirect()->to('/admin/home');
 
         return back()->withErrors([
             'email' => [trans('auth.failed')],
