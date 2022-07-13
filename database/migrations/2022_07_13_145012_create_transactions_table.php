@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('from')->index();
             $table->unsignedBigInteger('to')->index();
             $table->decimal('amount');
+            $table->boolean('status')->default(1);
 
             $table->foreign('from')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('to')->references('id')->on('users')->onDelete('cascade');
