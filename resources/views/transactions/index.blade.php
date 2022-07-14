@@ -1,11 +1,5 @@
 @extends('layouts.app')
-@section('style')
-    <!-- CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.css" />
 
-    <!-- JS -->
-    <script src="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.js"></script>
-@endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -65,25 +59,5 @@
 
 
 
-
-        @if (Session::has('success'))
-            new Notify ({
-                status: 'success',
-                title: 'Success',
-                text: '{{ Session::get('success') }}',
-                effect: 'fade',
-                speed: 300,
-                customClass: '',
-                customIcon: '',
-                showIcon: true,
-                showCloseButton: true,
-                autoclose: true,
-                autotimeout: 3000,
-                gap: 20,
-                distance: 20,
-                type: 3,
-                position: 'right top'
-            })
-        @endif
     </script>
 @endsection

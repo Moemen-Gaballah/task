@@ -38,8 +38,8 @@ Route::group(['prefix'=>'admin','as'=>'admin.', 'middleware' => 'auth:admin'], f
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/list', [UserController::class, 'getUsers'])->name('users.list');
 
-    Route::get('/reports', [TransactionController::class, 'index'])->name('reports.transactions.index');
-    Route::get('/reports/list', [TransactionController::class, 'getTransactions'])->name('reports.transactions.list');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.transactions.index');
+    Route::get('/reports/list', [ReportController::class, 'getTransactions'])->name('reports.transactions.list');
 
     Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs.index');
 

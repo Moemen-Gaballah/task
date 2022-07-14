@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Session;
 
 class ProfileController extends Controller
 {
@@ -21,12 +22,12 @@ class ProfileController extends Controller
                 'password' => Hash::make($request->password),
             ])->save();
 
-            $request->session()->flash('success', 'profile updated');
+            Session::flash('success', "done update profile.");
             return redirect()->route('profile');
 
         } else {
             return back()->withErrors([
-                'password' => [trans('auth.failed')],
+                'old_password' => [trans('auth.failed')],
             ]);
         }
 

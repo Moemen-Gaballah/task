@@ -74,6 +74,17 @@
     <script>
         const ctx = document.getElementById('myChart').getContext('2d');
 
+        var success = 1;
+        var fail = 1;
+        if({{$transactionAnalytics->count()}}){
+            var success = '{{ optional($transactionAnalytics->where('status', 1)->first())->total ?? 0 }}'
+            var fail = '{{ optional($transactionAnalytics->where('status', 0)->first())->total ?? 0 }}'
+        }
+
+
+        const data = [success, fail];
+
+
         var chart = new Chart(ctx, {
             options: {
                 plugins: {
@@ -91,7 +102,7 @@
                 ],
                 datasets: [{
                     label: 'Report Transactions',
-                    data: [400000, 100000],
+                    data: data,
                     backgroundColor: [
                         '#5b9bd5',
                         '#ed7d31',
