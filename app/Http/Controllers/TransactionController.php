@@ -6,6 +6,8 @@ use App\Models\Transaction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Session;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
@@ -35,7 +37,7 @@ class TransactionController extends Controller
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('type', function($row){
-                return ($row->from == auth()->id()) ? 'Expense' : 'Income';
+                return ($row->from == auth()->id()) ? 'Transfer' : 'Income';
             })
             ->addColumn('from', function($row){
                 return ($row->from == auth()->id()) ? 'Me' : $row->fromUser->name;
@@ -58,7 +60,7 @@ class TransactionController extends Controller
     public function create()
     {
         // TODO Select Ajax with pagination for performance
-        $users = User::select('id', 'name')->get();
+        $users = User::select('id', 'name')->where('id', '!=', auth()->id())->get();
 
         return view('transactions.create',compact('users'));
     }
@@ -77,11 +79,34 @@ class TransactionController extends Controller
             return back()->withErrors(['amount' => $amountErrorMsg]);
         }
 
-        Transaction::create([
-           'from' => auth()->id(),
-           'to' => $request->user_id,
-           'amount' => $request->amount,
-        ]);
+        DB::beginTransaction();
+        try {
+
+            $sender = auth()->user();
+            $sender->balance -= $request->amount;
+            $sender->save();
+
+            $receiver = User::find($request->user_id);
+            $receiver->balance += $request->amount;
+            $receiver->save();
+
+            Transaction::create([
+                'from' => auth()->id(),
+                'to' => $request->user_id,
+                'amount' => $request->amount,
+            ]);
+
+            DB::commit();
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return $e->getMessage();
+            // something went wrong
+        }
+
+        Session::flash('success', "done transfer successfully.");
+        return redirect()->route('transactions.index');
 
     }
 

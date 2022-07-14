@@ -1,13 +1,17 @@
 @extends('layouts.app')
 @section('style')
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.css" />
 
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify@0.5.5/dist/simple-notify.min.js"></script>
 @endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">all transactions</div>
+                <div class="card-header"><span style="font-size: 18px; margin: auto; line-height: 2">all transactions</span> <span style="float: right"><a class="btn btn-primary" href="{{route('transactions.create')}}">new transfer</a> </span> </div>
 
                 <div class="card-body">
                     <table class="table table-bordered data-table">
@@ -58,5 +62,28 @@
             });
 
         });
+
+
+
+
+        @if (Session::has('success'))
+            new Notify ({
+                status: 'success',
+                title: 'Success',
+                text: '{{ Session::get('success') }}',
+                effect: 'fade',
+                speed: 300,
+                customClass: '',
+                customIcon: '',
+                showIcon: true,
+                showCloseButton: true,
+                autoclose: true,
+                autotimeout: 3000,
+                gap: 20,
+                distance: 20,
+                type: 3,
+                position: 'right top'
+            })
+        @endif
     </script>
 @endsection
