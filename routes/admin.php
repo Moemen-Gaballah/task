@@ -20,7 +20,7 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 
 
 
-Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('admin.login_form')->middleware('guest');
+Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('admin.login_form')->middleware('guest:admin');
 
 Route::post('/admin/login', [LoginController::class, 'attemptLogin'])->name('admin.login');
 
