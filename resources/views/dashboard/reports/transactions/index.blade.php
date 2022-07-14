@@ -12,38 +12,41 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
+    <div class="container">
+        <div class="row justify-content-center">
 
-        <div class="col-12 text-center">
-            <div style=" height: 200px !important; width: 200px !important;">
-                <canvas id="myChart"></canvas>
+            <div class="col-12 ">
+                <p>update graph every 24h</p>
             </div>
-        </div>
+            <div class="col-12 text-center">
+                <div style=" height: 200px !important; width: 200px !important;">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
 
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">reports</div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">reports</div>
 
-                <div class="card-body">
-                    <table class="table table-bordered data-table">
-                        <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>from</th>
-                            <th>to</th>
-                            <th>amount</th>
-                            <th>created_at</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="card-body">
+                        <table class="table table-bordered data-table">
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>from</th>
+                                <th>to</th>
+                                <th>amount</th>
+                                <th>created_at</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @section('script')
@@ -76,7 +79,7 @@
 
         var success = 1;
         var fail = 1;
-        if({{$transactionAnalytics->count()}}){
+        if ({{$transactionAnalytics->count()}}) {
             var success = '{{ optional($transactionAnalytics->where('status', 1)->first())->total ?? 0 }}'
             var fail = '{{ optional($transactionAnalytics->where('status', 0)->first())->total ?? 0 }}'
         }
