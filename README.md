@@ -45,7 +45,6 @@ Admin Email/Password: `admin@admin.com/admin`
 ### TODO
 - [] Seperate logic from controller to service.
 - [] Page Report.
-- [] Handel Redirect (guard admin - user to correct page).
 - [] Graph transaction list with Materialized view.
 - [] Add awesome dashboard
 - [] Unit test
