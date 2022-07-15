@@ -76,12 +76,13 @@
 
     <script>
         const ctx = document.getElementById('myChart').getContext('2d');
-
+        // TODO refactor move it to (VIEW MODEL)
+        // add one for show graph
         var success = 1;
         var fail = 1;
         if ({{$transactionAnalytics->count()}}) {
-            var success = '{{ optional($transactionAnalytics->where('status', 1)->first())->total ?? 0 }}'
-            var fail = '{{ optional($transactionAnalytics->where('status', 0)->first())->total ?? 0 }}'
+            var success = '{{ optional($transactionAnalytics->where('status', 1)->first())->total ?? 1 }}'
+            var fail = '{{ optional($transactionAnalytics->where('status', 0)->first())->total ?? 1 }}'
         }
 
 
