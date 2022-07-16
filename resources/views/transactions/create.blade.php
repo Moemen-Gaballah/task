@@ -37,7 +37,7 @@
                                 <label for="password" class="col-md-4 col-form-label text-md-end">amount</label>
 
                                 <div class="col-md-6">
-                                    <input id="amount" type="number" value="{{old('amount')}}"
+                                    <input id="amount" type="number" max="200" value="{{old('amount')}}"
                                            class="form-control @error('amount') is-invalid @enderror" name="amount"
                                            required>
 

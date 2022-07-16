@@ -17,7 +17,8 @@ class StoreTransactionRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'exists:users,id'],
-            'amount' => ['required', 'numeric', 'min:0'],
+            // todo change max 200 to 200 - transfer many in last hour
+            'amount' => ['required', 'numeric', 'min:0', 'max:200'],
             'card_number' => ['required', new CardNumberValidation()],
             'name_on_card' => ['required','string'],
             'expiry_date' => ['required', new ExpiryDateValidation()],

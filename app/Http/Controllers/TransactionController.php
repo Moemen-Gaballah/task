@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Http\Requests\StoreTransactionRequest;
-use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Session;
+use App\Services\TransactionsService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
@@ -19,7 +19,6 @@ class TransactionController extends Controller
      */
     public function index()
     {
-
         return view('transactions.index');
     }
 
@@ -30,7 +29,7 @@ class TransactionController extends Controller
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function getTransactions(Transaction $transaction)
+    public function getTransactionsDataTable()
     {
         $data = Transaction::where('to', auth()->id())->orWhere('from', auth()->id())->with(['fromUser', 'toUser']);
 
@@ -71,60 +70,18 @@ class TransactionController extends Controller
      * @param  \App\Http\Requests\StoreTransactionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTransactionRequest $request)
+    public function store(StoreTransactionRequest $request, TransactionsService $service)
     {
-        // Validation
-        $amountErrorMsg = $this->validateTransferBalance($request->all());
-        if(!is_null($amountErrorMsg)){
-            return back()->withErrors(['amount' => $amountErrorMsg]);
-        }
-
-        DB::beginTransaction();
-        try {
-
-            $sender = auth()->user();
-            $sender->balance -= $request->amount;
-            $sender->save();
-
-            $receiver = User::find($request->user_id);
-            $receiver->balance += $request->amount;
-            $receiver->save();
-
-            Transaction::create([
-                'from' => auth()->id(),
-                'to' => $request->user_id,
-                'amount' => $request->amount,
-            ]);
-
-            DB::commit();
-            // all good
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return $e->getMessage();
-            // something went wrong
-        }
+        $transaction = $service->store($request->all());
+        if($transaction instanceof RedirectResponse)
+            return $transaction;
 
         Session::flash('success', "done transfer successfully.");
         return redirect()->route('transactions.index');
 
     }
 
-    protected function validateTransferBalance($data){
-        $amountMsg = null;
-        $balance = auth()->user()->balance;
-        $totalTransferLastHour = Transaction::where('from', auth()->id())->where('created_at', '>=', \Carbon\Carbon::now()->subHour())->sum('amount');
-        $totalTransfer = $data['amount'] + $totalTransferLastHour;
 
-        if($balance < $data['amount'])
-            return $amountMsg = 'sorry, your balance less than amount';
-
-
-        if($totalTransfer > User::MAX_Transfer)
-            return $amountMsg = 'sorry, try again after one hour';
-
-        return $amountMsg;
-    }
 
 
 }
